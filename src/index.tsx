@@ -1,14 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { ApolloProvider } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { offsetLimitPagination } from "@apollo/client/utilities"
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        Country: offsetLimitPagination(["type"]),
+      },
+    },
+  },
+});
+const client = new ApolloClient({
+  uri: 'http://localhost:8080/',
+  
+  cache: cache
+});
+
 
 ReactDOM.render(
-  <React.StrictMode>
+  <ApolloProvider client={client}>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </ApolloProvider>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
